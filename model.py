@@ -1,4 +1,4 @@
-from random import *
+import random
 from typing import List
 
 
@@ -47,51 +47,22 @@ class Board:
 			x_offset = 0
 			y_offset = -1
 			return x_offset, y_offset
-			# do stuff
 		if y + 1 < self.height and self.matrix[x][y + 1] == 0:
 			self.swap_values(x, y, x, y + 1)
 			x_offset = 0
 			y_offset = 1
 			return x_offset, y_offset
-			# do stuff
 		if x - 1 >= 0 and self.matrix[x - 1][y] == 0:
 			self.swap_values(x, y, x - 1, y)
 			x_offset = -1
 			y_offset = 0
 			return x_offset, y_offset
-			# do stuff
 		if x + 1 < self.width and self.matrix[x + 1][y] == 0:
 			self.swap_values(x, y, x + 1, y)
 			x_offset = 1
 			y_offset = 0
 			return x_offset, y_offset
-			# do stuff
-
-
-		'''
-				if self.value == 0:
-			return
-		if self.y - 1 >= 0 and model_board[self.x][self.y - 1].value == 0:
-			model_board[self.x][self.y - 1].y += 1
-			model_board[self.x][self.y - 1], model_board[self.x][self.y] = swap(model_board[self.x][self.y - 1],
-			                                                                    model_board[self.x][self.y])
-			self.move_up(canvas, 30)
-		elif self.y + 1 < len(model_board[0]) and model_board[self.x][self.y + 1].value == 0:
-			model_board[self.x][self.y + 1].y -= 1
-			model_board[self.x][self.y + 1], model_board[self.x][self.y] = swap(model_board[self.x][self.y + 1],
-			                                                                    model_board[self.x][self.y])
-			self.move_down(canvas, 30)
-		elif self.x - 1 >= 0 and model_board[self.x - 1][self.y].value == 0:
-			model_board[self.x - 1][self.y].x += 1
-			model_board[self.x - 1][self.y], model_board[self.x][self.y] = swap(model_board[self.x - 1][self.y],
-			                                                                    model_board[self.x][self.y])
-			self.move_left(canvas, 30)
-		elif self.x + 1 < len(model_board) and model_board[self.x + 1][self.y].value == 0:
-			model_board[self.x + 1][self.y].x -= 1
-			model_board[self.x + 1][self.y], model_board[self.x][self.y] = swap(model_board[self.x + 1][self.y],
-			                                                                    model_board[self.x][self.y])
-			self.move_right(canvas, 30)
-		'''
+		return 0, 0
 
 
 
