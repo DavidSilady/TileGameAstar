@@ -3,8 +3,18 @@ from heapq import *
 
 
 class AStar:
-	def __init__(self):
+	def __init__(self, starting_board: Board, goal_board: Board):
 		self.available_states = []  # max heap
+		free_x = -1
+		free_y = -1
+		for y in range(starting_board.height):
+			for x in range(starting_board.width):
+				if starting_board[x][y] == 0:
+					free_x = x
+					free_y = y
+					break
+		starting_state = State(starting_board, goal_board, 0, free_x, free_y)
+		heappush(self.available_states, (starting_state.value, starting_state))
 
 
 class State:
