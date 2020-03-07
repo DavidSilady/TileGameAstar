@@ -16,11 +16,11 @@ class GraphicBoard:
 	def draw_tiles(self, size, margin=5):
 		for y in range(self.height):
 			for x in range(self.width):
-				new_tile = self.Tile(x, y, self.int_board.tiles[x][y].value)
+				new_tile = self.Tile(x, y, self.int_board.matrix[x][y])
 				new_tile.draw(self.canvas,
 				              (x * size) + (x * margin),
 				              (y * size) + (y * margin),
-				              self.int_board.tiles,
+				              self.int_board.matrix,
 				              size,
 				              margin)
 
@@ -34,31 +34,31 @@ class GraphicBoard:
 			self.text = None
 			self.margin = 5
 
-		def mouse_clicked(self, event, board, canvas):
+		def mouse_clicked(self, event, model_board, canvas):
 			if self.value == 0:
 				return
-			if self.y - 1 >= 0 and board[self.x][self.y - 1].value == 0:
-				board[self.x][self.y - 1].y += 1
-				board[self.x][self.y - 1], board[self.x][self.y] = swap(board[self.x][self.y - 1],
-				                                                        board[self.x][self.y])
+			if self.y - 1 >= 0 and model_board[self.x][self.y - 1].value == 0:
+				model_board[self.x][self.y - 1].y += 1
+				model_board[self.x][self.y - 1], model_board[self.x][self.y] = swap(model_board[self.x][self.y - 1],
+				                                                                    model_board[self.x][self.y])
 				self.move_up(canvas, 30)
-			elif self.y + 1 < len(board[0]) and board[self.x][self.y + 1].value == 0:
-				board[self.x][self.y + 1].y -= 1
-				board[self.x][self.y + 1], board[self.x][self.y] = swap(board[self.x][self.y + 1],
-				                                                        board[self.x][self.y])
+			elif self.y + 1 < len(model_board[0]) and model_board[self.x][self.y + 1].value == 0:
+				model_board[self.x][self.y + 1].y -= 1
+				model_board[self.x][self.y + 1], model_board[self.x][self.y] = swap(model_board[self.x][self.y + 1],
+				                                                                    model_board[self.x][self.y])
 				self.move_down(canvas, 30)
-			elif self.x - 1 >= 0 and board[self.x - 1][self.y].value == 0:
-				board[self.x - 1][self.y].x += 1
-				board[self.x - 1][self.y], board[self.x][self.y] = swap(board[self.x - 1][self.y],
-				                                                        board[self.x][self.y])
+			elif self.x - 1 >= 0 and model_board[self.x - 1][self.y].value == 0:
+				model_board[self.x - 1][self.y].x += 1
+				model_board[self.x - 1][self.y], model_board[self.x][self.y] = swap(model_board[self.x - 1][self.y],
+				                                                                    model_board[self.x][self.y])
 				self.move_left(canvas, 30)
-			elif self.x + 1 < len(board) and board[self.x + 1][self.y].value == 0:
-				board[self.x + 1][self.y].x -= 1
-				board[self.x + 1][self.y], board[self.x][self.y] = swap(board[self.x + 1][self.y],
-				                                                        board[self.x][self.y])
+			elif self.x + 1 < len(model_board) and model_board[self.x + 1][self.y].value == 0:
+				model_board[self.x + 1][self.y].x -= 1
+				model_board[self.x + 1][self.y], model_board[self.x][self.y] = swap(model_board[self.x + 1][self.y],
+				                                                                    model_board[self.x][self.y])
 				self.move_right(canvas, 30)
 
-		def draw(self, canvas: Canvas, x, y, board, size=50, margin=5):
+		def draw(self, canvas: Canvas, x, y, model_board, size=50, margin=5):
 			self.margin = margin
 			self.size = size
 			if self.value == 0:
@@ -67,8 +67,8 @@ class GraphicBoard:
 			center_x = x + (size / 2)
 			center_y = y + (size / 2)
 			self.text = canvas.create_text(center_x, center_y, text=str(self.value), fill="white", font="100")
-			canvas.tag_bind(self.background, "<Button-1>", lambda event: self.mouse_clicked(event, board, canvas))
-			canvas.tag_bind(self.text, "<Button-1>", lambda event: self.mouse_clicked(event, board, canvas))
+			canvas.tag_bind(self.background, "<Button-1>", lambda event: self.mouse_clicked(event, model_board, canvas))
+			canvas.tag_bind(self.text, "<Button-1>", lambda event: self.mouse_clicked(event, model_board, canvas))
 
 		def move_up(self, canvas: Canvas, speed=10):
 			self.move_tile(0, -1, canvas, speed)
