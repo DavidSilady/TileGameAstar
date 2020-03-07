@@ -1,4 +1,4 @@
 from view import *
 
 
-init_gui()
+init_gui(width=5, height=5)

@@ -1,5 +1,6 @@
 from graphic_board import *
 from tkinter import *
+from model import Board
 
 
 def init_gui(starting_board=None, size=75, width=3, height=3, margin=5):
@@ -20,7 +21,7 @@ def init_gui(starting_board=None, size=75, width=3, height=3, margin=5):
 	goal_canvas.pack(side='right')
 
 	graphic_work_board = GraphicBoard(starting_board, work_canvas)
-	graphic_work_board.draw_tiles(size=size, margin=margin)
+	graphic_work_board.draw_tiles(size=size, margin=margin, goal_board=goal_board)
 
 	graphic_goal_board = GraphicBoard(goal_board, goal_canvas)
 	graphic_goal_board.draw_tiles(size=size, margin=margin)
