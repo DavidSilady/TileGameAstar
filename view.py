@@ -2,7 +2,8 @@ from graphic_board import *
 from tkinter import *
 
 
-def init_gui(board):
+def init_gui(board=None):
+	board = Board(5, 6)
 	root = Tk()
 	root.geometry('680x680')
 

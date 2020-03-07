@@ -33,7 +33,7 @@ class GraphicBoard:
 
 		def mouse_clicked(self, event, model_board: Board, canvas):
 			direction_x, direction_y = model_board.interact(self.x, self.y)
-			self.move_tile(direction_x, direction_y, canvas, 30)
+			self.move_tile(direction_x, direction_y, canvas, speed=100)
 			self.x += direction_x
 			self.y += direction_y
 
@@ -50,7 +50,7 @@ class GraphicBoard:
 			canvas.tag_bind(self.text, "<Button-1>", lambda event: self.mouse_clicked(event, model_board, canvas))
 
 		def move_tile(self, direction_x, direction_y, canvas, speed=10):
-			speed = 0.1 / speed
+			speed = 0.05 / speed
 			if self.value == 0:
 				return
 			for offset in range(0, self.size + self.margin):
