@@ -64,5 +64,3 @@ class Board:
 			return x_offset, y_offset
 		return 0, 0
 
-
-
