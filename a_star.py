@@ -63,7 +63,7 @@ class AStar:
 
 			if current_state.prev_state is None:
 				index = 0
-				#solution.reverse()
+				solution.reverse()
 				for move in solution:
 					print(index, move)
 					index += 1

@@ -27,6 +27,12 @@ class Board:
 		self.height = height
 		self.matrix: List[List[int]] = generate_tiles(width, height)
 
+	def get_empty(self):
+		for y in range(self.height):
+			for x in range(self.width):
+				if self.matrix[x][y] == 0:
+					return x, y
+
 	def print_tiles(self):
 		for y in range(self.height):
 			output = ""
