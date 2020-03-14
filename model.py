@@ -31,7 +31,7 @@ class Board:
 		for y in range(self.height):
 			output = ""
 			for x in range(self.width):
-				output += " " + str(self.matrix[x][y].value)
+				output += " " + str(self.matrix[x][y])
 			print(output)
 
 	def swap_values(self, x1, y1, x2, y2):
