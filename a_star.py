@@ -38,9 +38,6 @@ class AStar:
 				final_state.current_board.print_tiles()
 				print("Found!!")
 				return final_state
-			if len(self.all_generated_states) > 20000:
-				print(len(self.all_generated_states))
-				return None
 
 	def find_solution(self):
 
@@ -78,7 +75,7 @@ class State:
 		self.current_board = current_board
 		self.goal_board = goal_board
 		self.num_steps = num_steps
-		self.value = self.calculate_value() + num_steps
+		self.value = self.calculate_distance_value() + num_steps
 
 	def get_current_board_copy(self):
 		return copy.deepcopy(self.current_board)
@@ -89,7 +86,15 @@ class State:
 				if self.goal_board.matrix[x][y] == wanted_value:
 					return abs(value_x - x) + abs(value_y - y)
 
-	def calculate_value(self):
+	def calculate_match_value(self):
+		board_value = 0
+		for y in range(self.current_board.height):
+			for x in range(self.current_board.width):
+				if self.current_board.matrix[x][y] != self.goal_board.matrix[x][y]:
+					board_value += 1
+		return board_value
+
+	def calculate_distance_value(self):
 		board_value = 0
 		for y in range(self.current_board.height):
 			for x in range(self.current_board.width):

@@ -5,13 +5,15 @@ from model import Board
 
 
 def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
+	start = time.time()
 	a_star = AStar(primary_board, secondary_board)
 	solution = a_star.find_solution()
 
 	if solution is not None:
-
 		for coordinates in solution:
 			primary_graphic_board.move_empty(coordinates)
+	end = time.time()
+	print("Time elapsed: ", end - start)
 
 
 def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
