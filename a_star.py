@@ -50,9 +50,9 @@ class AStar:
 			return None
 		if current_state.prev_state is None:
 			print("Wow, does not need solving.")
+			return None
 
 		solution = []
-		debug = []
 
 		while True:
 			move_coordinates = (current_state.prev_state.free_x - current_state.free_x,
@@ -63,7 +63,7 @@ class AStar:
 
 			if current_state.prev_state is None:
 				index = 0
-				solution.reverse()
+				# solution.reverse()
 				for move in solution:
 					print(index, move)
 					index += 1

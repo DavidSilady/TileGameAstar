@@ -20,6 +20,9 @@ class Tile:  # inner Tile class
 		self.move_tile(direction_x, direction_y, canvas, speed=100)
 		self.x += direction_x
 		self.y += direction_y
+		self.check_color(primary_board, secondary_board, canvas)
+
+	def check_color(self, primary_board: Board, secondary_board: Board, canvas: Canvas):
 		if primary_board.matrix[self.x][self.y] == secondary_board.matrix[self.x][self.y]:
 			canvas.itemconfig(self.background, fill="red")
 		else:
@@ -69,7 +72,16 @@ class GraphicBoard:
 		self.tiles: List(List(Tile)) = [[Tile() for i in range(self.primary_board.height)]
 		                                for j in range(self.primary_board.width)]
 
+	def debug(self):
+		output = ""
+		for y in range(self.primary_board.height):
+			for x in range(self.primary_board.width):
+				output += " " + str(self.tiles[x][y].value)
+			print(output)
+			output = ""
+
 	def swap_tiles(self, x1, y1, x2, y2):
+		print("Swapping: ", x1, y1, " for ", x2, y2)
 		tmp = self.tiles[x1][y1]
 		self.tiles[x1][y1] = self.tiles[x2][y2]
 		self.tiles[x2][y2] = tmp
@@ -82,8 +94,10 @@ class GraphicBoard:
 	def move_empty(self, coordinates):
 		x, y = self.primary_board.get_empty()
 		directions = self.primary_board.interact(x + coordinates[0], y + coordinates[1])
-		self.tiles[x + coordinates[0]][y + coordinates[1]].move_tile(directions[0], directions[1], self.canvas)
+		self.tiles[x + coordinates[0]][y + coordinates[1]].move_tile(directions[0], directions[1], self.canvas, speed=100)
 		self.swap_tiles(x, y, x + coordinates[0], y + coordinates[1])
+		self.tiles[x][y].check_color(self.primary_board, self.secondary_board, self.canvas)
+		# print(self.tiles[x + coordinates[0]][y + coordinates[1]].x, self.tiles[x + coordinates[0]][y + coordinates[1]].y)
 
 	def draw_tiles(self, size, margin=5, goal_board: Board = None):
 		tiles = [[None for i in range(self.primary_board.height)] for j in range(self.primary_board.width)]

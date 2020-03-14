@@ -7,29 +7,50 @@ from model import Board
 def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 	a_star = AStar(primary_board, secondary_board)
 	solution = a_star.find_solution()
+
 	if solution is not None:
+
 		for coordinates in solution:
 			primary_graphic_board.move_empty(coordinates)
 
 
-def new_button(canvas: Canvas, primary_board, secondary_board, graphic_board, size=130, x=0, y=0, text="Solve"):
-	def on_enter(e):
-		canvas.itemconfig(rectangle, fill="red")
+def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
+	a_star = AStar(primary_board, secondary_board)
+	solution = a_star.find_solution()
 
-	def on_leave(e):
-		canvas.itemconfig(rectangle, fill="black")
+	if solution is not None:
+		primary_graphic_board.move_empty(solution[0])
 
+
+def new_button(canvas: Canvas, size, x, y, text):
 	rectangle = canvas.create_rectangle(x, y, x + size, y + size/2, fill="Black", width=0)
 	center_x = x + (size / 2)
 	center_y = y + (size / 4)
 	text = canvas.create_text(center_x, center_y, text=text, fill="white", font="100")
+	return rectangle, text
 
-	canvas.tag_bind(rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
-	canvas.tag_bind(text, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
 
-	canvas.tag_bind(rectangle, "<Enter>", on_enter)
-	canvas.tag_bind(text, "<Enter>", on_enter)
-	canvas.tag_bind(rectangle, "<Leave>", on_leave)
+def generate_buttons(canvas: Canvas, primary_board, secondary_board, graphic_board, size=130, x=0, y=0):
+	def on_enter(e, button):
+		canvas.itemconfig(button, fill="red")
+
+	def on_leave(e, button):
+		canvas.itemconfig(button, fill="black")
+
+	solve_rectangle, solve_text = new_button(canvas, size, x, y, "Solve")
+	canvas.tag_bind(solve_rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
+	canvas.tag_bind(solve_text, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
+	canvas.tag_bind(solve_rectangle, "<Enter>", lambda event: on_enter(event, solve_rectangle))
+	canvas.tag_bind(solve_text, "<Enter>", lambda event: on_enter(event, solve_rectangle))
+	canvas.tag_bind(solve_rectangle, "<Leave>", lambda event: on_leave(event, solve_rectangle))
+
+	hint_rectangle, hint_text = new_button(canvas, size, x, y + (size / 2) + 15, "Hint")
+	canvas.tag_bind(hint_rectangle, "<Button-1>", lambda event: hint(primary_board, secondary_board, graphic_board))
+	canvas.tag_bind(hint_text, "<Button-1>", lambda event: hint(primary_board, secondary_board, graphic_board))
+
+	canvas.tag_bind(hint_rectangle, "<Enter>", lambda event: on_enter(event, hint_rectangle))
+	canvas.tag_bind(hint_text, "<Enter>", lambda event: on_enter(event, hint_rectangle))
+	canvas.tag_bind(hint_rectangle, "<Leave>", lambda event: on_leave(event, hint_rectangle))
 
 
 def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
@@ -58,6 +79,6 @@ def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 	secondary_graphic_board = GraphicBoard(secondary_board, primary_board, secondary_canvas)
 	secondary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=primary_board)
 
-	new_button(control_canvas, primary_board, secondary_board, primary_graphic_board, size=(2 * size) - (3 * margin))
+	generate_buttons(control_canvas, secondary_board, primary_board, primary_graphic_board, size=(2 * size) - (3 * margin))
 
 	root.mainloop()

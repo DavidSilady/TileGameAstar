@@ -46,6 +46,7 @@ class Board:
 		self.matrix[x2][y2] = tmp
 
 	def interact(self, x, y):
+		print("Interact: ", x, y)
 		if self.matrix[x][y] == 0:
 			return 0, 0
 		if y - 1 >= 0 and self.matrix[x][y - 1] == 0:
