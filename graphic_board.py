@@ -15,11 +15,10 @@ class Tile:  # inner Tile class
 		self.text = None
 		self.margin = 10
 
-	def mouse_clicked(self, event, primary_board: Board, secondary_board: Board, canvas):
+	def mouse_clicked(self, event, primary_board: Board, secondary_board: Board, canvas, graphic_board):
 		direction_x, direction_y = primary_board.interact(self.x, self.y)
 		self.move_tile(direction_x, direction_y, canvas, speed=100)
-		self.x += direction_x
-		self.y += direction_y
+		graphic_board.swap_tiles(self.x, self.y, self.x + direction_x, self.y + direction_y)
 		self.check_color(primary_board, secondary_board, canvas)
 
 	def check_color(self, primary_board: Board, secondary_board: Board, canvas: Canvas):
@@ -28,7 +27,8 @@ class Tile:  # inner Tile class
 		else:
 			canvas.itemconfig(self.background, fill="black")
 
-	def draw(self, canvas: Canvas, x, y, primary_board: Board, secondary_board: Board = None, size=50, margin=5):
+	def draw(self, canvas: Canvas, x, y, graphic_board,
+	         primary_board: Board, secondary_board: Board = None, size=50, margin=5):
 		self.margin = margin
 		self.size = size
 		if self.value == 0:
@@ -47,11 +47,13 @@ class Tile:  # inner Tile class
 		                lambda event: self.mouse_clicked(event,
 		                                                 primary_board,
 		                                                 secondary_board,
-		                                                 canvas))
+		                                                 canvas,
+		                                                 graphic_board))
 		canvas.tag_bind(self.text, "<Button-1>", lambda event: self.mouse_clicked(event,
 		                                                                          primary_board,
 		                                                                          secondary_board,
-		                                                                          canvas))
+		                                                                          canvas,
+		                                                                          graphic_board))
 
 	def move_tile(self, direction_x, direction_y, canvas, speed=100, rect_bg="black"):
 		speed = 0.05 / speed
@@ -107,6 +109,7 @@ class GraphicBoard:
 				new_tile.draw(self.canvas,
 				              (x * size) + (x * margin),
 				              (y * size) + (y * margin),
+				              self,
 				              self.primary_board,
 				              secondary_board=goal_board,
 				              size=size,
