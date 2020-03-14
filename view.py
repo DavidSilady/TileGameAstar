@@ -4,12 +4,15 @@ from tkinter import *
 from model import Board
 
 
-def solve(primary_board, secondary_board):
+def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 	a_star = AStar(primary_board, secondary_board)
 	solution = a_star.find_solution()
+	if solution is not None:
+		for coordinates in solution:
+			primary_graphic_board.move_empty(coordinates)
 
 
-def new_button(canvas: Canvas, primary_board, secondary_board, size=130, x=0, y=0, text="Solve"):
+def new_button(canvas: Canvas, primary_board, secondary_board, graphic_board, size=130, x=0, y=0, text="Solve"):
 	def on_enter(e):
 		canvas.itemconfig(rectangle, fill="red")
 
@@ -21,8 +24,8 @@ def new_button(canvas: Canvas, primary_board, secondary_board, size=130, x=0, y=
 	center_y = y + (size / 4)
 	text = canvas.create_text(center_x, center_y, text=text, fill="white", font="100")
 
-	canvas.tag_bind(rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board))
-	canvas.tag_bind(text, "<Button-1>", lambda event: solve(primary_board, secondary_board))
+	canvas.tag_bind(rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
+	canvas.tag_bind(text, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
 
 	canvas.tag_bind(rectangle, "<Enter>", on_enter)
 	canvas.tag_bind(text, "<Enter>", on_enter)
@@ -48,12 +51,13 @@ def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 
 	control_canvas = Canvas(root, width=root_width, height=root_height)
 	control_canvas.pack(side='top')
-	new_button(control_canvas, primary_board, secondary_board, size=(2*size)-(3*margin))
 
 	primary_graphic_board = GraphicBoard(primary_board, secondary_board, primary_canvas)
 	primary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=secondary_board)
 
 	secondary_graphic_board = GraphicBoard(secondary_board, primary_board, secondary_canvas)
 	secondary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=primary_board)
+
+	new_button(control_canvas, primary_board, secondary_board, primary_graphic_board, size=(2 * size) - (3 * margin))
 
 	root.mainloop()
