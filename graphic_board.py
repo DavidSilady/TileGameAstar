@@ -6,7 +6,7 @@ from tkinter import *
 
 
 class Tile:  # inner Tile class
-	def __init__(self, sister_g_board, x=0, y=0, value=0, size=50):
+	def __init__(self, sister_g_board, x=0, y=0, value=0, size=75):
 		self.x = x
 		self.y = y
 		self.size = size

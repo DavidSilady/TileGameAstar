@@ -38,6 +38,9 @@ class AStar:
 				final_state.current_board.print_tiles()
 				print("Found!!")
 				return final_state
+			if len(self.all_generated_states) > 255000:
+				print("Prematurely ending. . .")
+				return None
 
 	def find_solution(self):
 
