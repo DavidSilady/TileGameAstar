@@ -24,6 +24,15 @@ def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 		primary_graphic_board.move_empty(solution[0])
 
 
+def shuffle_board(primary_graphic_board, secondary_board, canvas, size=75, margin=5):
+	canvas.delete("all")
+	canvas.update()
+	time.sleep(1)
+	primary_board = Board(secondary_board.width, secondary_board.height)
+	primary_graphic_board = GraphicBoard(secondary_board, primary_board, canvas)
+	primary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=secondary_board)
+
+
 def new_button(canvas: Canvas, size, x, y, text):
 	rectangle = canvas.create_rectangle(x, y, x + size, y + size/2, fill="Black", width=0)
 	center_x = x + (size / 2)
@@ -32,7 +41,7 @@ def new_button(canvas: Canvas, size, x, y, text):
 	return rectangle, text
 
 
-def generate_buttons(canvas: Canvas, primary_board, secondary_board, graphic_board, size=130, x=0, y=0):
+def generate_buttons(canvas: Canvas, primary_canvas, primary_board, secondary_board, graphic_board, size=130, x=0, y=0):
 	def on_enter(e, button):
 		canvas.itemconfig(button, fill="red")
 
@@ -53,6 +62,19 @@ def generate_buttons(canvas: Canvas, primary_board, secondary_board, graphic_boa
 	canvas.tag_bind(hint_rectangle, "<Enter>", lambda event: on_enter(event, hint_rectangle))
 	canvas.tag_bind(hint_text, "<Enter>", lambda event: on_enter(event, hint_rectangle))
 	canvas.tag_bind(hint_rectangle, "<Leave>", lambda event: on_leave(event, hint_rectangle))
+	'''
+	shuffle_rectangle, shuffle_text = new_button(canvas, size, x, y + size + 30, "Randomize")
+	canvas.tag_bind(shuffle_rectangle, "<Button-1>", lambda event: shuffle_board(graphic_board,
+	                                                                             secondary_board,
+	                                                                             primary_canvas))
+	canvas.tag_bind(shuffle_text, "<Button-1>", lambda event: shuffle_board(graphic_board,
+	                                                                        secondary_board,
+	                                                                        primary_canvas))
+	canvas.tag_bind(shuffle_rectangle, "<Enter>", lambda event: on_enter(event, shuffle_rectangle))
+	canvas.tag_bind(shuffle_text, "<Enter>", lambda event: on_enter(event, shuffle_rectangle))
+	canvas.tag_bind(shuffle_rectangle, "<Leave>", lambda event: on_leave(event, shuffle_rectangle))
+	'''
+
 
 
 def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
@@ -81,6 +103,11 @@ def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 	secondary_graphic_board = GraphicBoard(secondary_board, primary_board, secondary_canvas)
 	secondary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=primary_board)
 
-	generate_buttons(control_canvas, secondary_board, primary_board, primary_graphic_board, size=(2 * size) - (3 * margin))
+	generate_buttons(control_canvas,
+	                 primary_canvas,
+	                 secondary_board,
+	                 primary_board,
+	                 primary_graphic_board,
+	                 size=(2 * size) - (3 * margin))
 
 	root.mainloop()
