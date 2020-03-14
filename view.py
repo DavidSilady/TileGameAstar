@@ -76,7 +76,6 @@ def generate_buttons(canvas: Canvas, primary_canvas, primary_board, secondary_bo
 	'''
 
 
-
 def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 	canvas_width = width * (margin + size)
 	root_width = (canvas_width * 2) + size * 2
@@ -98,10 +97,15 @@ def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 	control_canvas.pack(side='top')
 
 	primary_graphic_board = GraphicBoard(primary_board, secondary_board, primary_canvas)
-	primary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=secondary_board)
-
 	secondary_graphic_board = GraphicBoard(secondary_board, primary_board, secondary_canvas)
-	secondary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=primary_board)
+	primary_graphic_board.draw_tiles(size=size,
+	                                 sister_g_board=secondary_graphic_board,
+	                                 margin=margin,
+	                                 goal_board=secondary_board)
+	secondary_graphic_board.draw_tiles(size=size,
+	                                   sister_g_board=primary_graphic_board,
+	                                   margin=margin,
+	                                   goal_board=primary_board)
 
 	generate_buttons(control_canvas,
 	                 primary_canvas,

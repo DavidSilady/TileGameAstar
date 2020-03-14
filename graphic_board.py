@@ -6,7 +6,7 @@ from tkinter import *
 
 
 class Tile:  # inner Tile class
-	def __init__(self, x=0, y=0, value=0, size=50):
+	def __init__(self, sister_g_board, x=0, y=0, value=0, size=50):
 		self.x = x
 		self.y = y
 		self.size = size
@@ -14,12 +14,21 @@ class Tile:  # inner Tile class
 		self.background = None
 		self.text = None
 		self.margin = 10
+		self.sister_g_board = sister_g_board
 
 	def mouse_clicked(self, event, primary_board: Board, secondary_board: Board, canvas, graphic_board):
 		direction_x, direction_y = primary_board.interact(self.x, self.y)
 		self.move_tile(direction_x, direction_y, canvas, speed=100)
 		graphic_board.swap_tiles(self.x, self.y, self.x + direction_x, self.y + direction_y)
 		self.check_color(primary_board, secondary_board, canvas)
+		self.notify_observer(primary_board, secondary_board, self.x - direction_x, self.y - direction_y)
+
+	def notify_observer(self, primary_board, secondary_board, sec_x, sec_y):
+		self.sister_g_board.tiles[self.x][self.y].check_color(primary_board,
+		                                                      secondary_board,
+		                                                      self.sister_g_board.canvas)
+
+		self.sister_g_board.tiles[sec_x][sec_y].check_color(primary_board, secondary_board, self.sister_g_board.canvas)
 
 	def check_color(self, primary_board: Board, secondary_board: Board, canvas: Canvas):
 		if primary_board.matrix[self.x][self.y] == secondary_board.matrix[self.x][self.y]:
@@ -71,7 +80,7 @@ class GraphicBoard:
 		self.primary_board = primary_board
 		self.secondary_board = secondary_board
 		self.canvas = canvas
-		self.tiles: List(List(Tile)) = [[Tile() for i in range(self.primary_board.height)]
+		self.tiles: List(List(Tile)) = [[Tile(None) for i in range(self.primary_board.height)]
 		                                for j in range(self.primary_board.width)]
 
 	def debug(self):
@@ -99,13 +108,14 @@ class GraphicBoard:
 		self.tiles[x + coordinates[0]][y + coordinates[1]].move_tile(directions[0], directions[1], self.canvas, speed=100)
 		self.swap_tiles(x, y, x + coordinates[0], y + coordinates[1])
 		self.tiles[x][y].check_color(self.primary_board, self.secondary_board, self.canvas)
+		self.tiles[x][y].notify_observer(self.primary_board, self.secondary_board, x + coordinates[0], y + coordinates[1])
 		# print(self.tiles[x + coordinates[0]][y + coordinates[1]].x, self.tiles[x + coordinates[0]][y + coordinates[1]].y)
 
-	def draw_tiles(self, size, margin=5, goal_board: Board = None):
+	def draw_tiles(self, size, sister_g_board, margin=5, goal_board: Board = None):
 		tiles = [[None for i in range(self.primary_board.height)] for j in range(self.primary_board.width)]
 		for y in range(self.primary_board.height):
 			for x in range(self.primary_board.width):
-				new_tile = Tile(x, y, self.primary_board.matrix[x][y])
+				new_tile = Tile(sister_g_board, x, y, self.primary_board.matrix[x][y])
 				new_tile.draw(self.canvas,
 				              (x * size) + (x * margin),
 				              (y * size) + (y * margin),
