@@ -28,8 +28,8 @@ def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
 	secondary_graphic_board.draw_tiles(size=size, margin=margin, goal_board=primary_board)
 
 	a_star = AStar(primary_board, secondary_board)
-	a_star.find_solution()
-
-	root.mainloop()
+	solution = a_star.find_solution()
+	if solution is not None:
+		root.mainloop()
 
 
