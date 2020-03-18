@@ -1,7 +1,30 @@
-from a_star import AStar
-from graphic_board import *
+from view.graphic_board import *
 from tkinter import *
-from model import Board
+from model.board import Board
+
+
+def init_gui(primary_board=None, secondary_board=None, size=75, width=3, height=3, margin=5):
+	canvas_width = width * (margin + size)
+	root_width = (canvas_width * 2) + size * 2
+	root_height = height * (margin + size)
+	root_dimensions = str(root_width) + "x" + str(root_height)
+	root = Tk()
+	root.geometry(root_dimensions)
+
+	primary_canvas = Canvas(root, width=canvas_width, height=root_height)
+	primary_canvas.pack(side='left')
+
+	secondary_canvas = Canvas(root, width=canvas_width, height=root_height)
+	secondary_canvas.pack(side='right')
+
+	control_canvas = Canvas(root, width=root_width, height=root_height)
+	control_canvas.pack(side='top')
+
+	draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height, size, margin,
+	            primary_board,
+	            secondary_board)
+
+	root.mainloop()
 
 
 def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
@@ -75,29 +98,9 @@ def draw_buttons(canvas: Canvas, primary_canvas, secondary_canvas,
 	canvas.tag_bind(shuffle_rect, "<Leave>", lambda event: on_leave(event, shuffle_rect))
 
 
-def init_gui(primary_board=None, size=75, width=3, height=3, margin=5):
-	canvas_width = width * (margin + size)
-	root_width = (canvas_width * 2) + size * 2
-	root_height = height * (margin + size)
-	root_dimensions = str(root_width) + "x" + str(root_height)
-	root = Tk()
-	root.geometry(root_dimensions)
-
-	primary_canvas = Canvas(root, width=canvas_width, height=root_height)
-	primary_canvas.pack(side='left')
-
-	secondary_canvas = Canvas(root, width=canvas_width, height=root_height)
-	secondary_canvas.pack(side='right')
-
-	control_canvas = Canvas(root, width=root_width, height=root_height)
-	control_canvas.pack(side='top')
-
-	draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height, size, margin)
-
-	root.mainloop()
-
-
-def draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height, size, margin):
+def draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height, size, margin,
+                primary_board=None,
+                secondary_board=None):
 	primary_canvas.delete("all")
 	secondary_canvas.delete("all")
 	control_canvas.delete("all")

@@ -1,7 +1,5 @@
-import time
-
-from view import *
-from model import *
+from view.gui_init import *
+from model.board import *
 from tkinter import *
 
 

@@ -1,6 +1,6 @@
 import copy
 
-from model import *
+from model.board import *
 from heapq import *
 
 
@@ -78,7 +78,7 @@ class State:
 		self.current_board = current_board
 		self.goal_board = goal_board
 		self.num_steps = num_steps
-		self.value = self.calculate_distance_value() + num_steps
+		self.value = self.calculate_match_value() + num_steps
 
 	def get_current_board_copy(self):
 		return copy.deepcopy(self.current_board)
