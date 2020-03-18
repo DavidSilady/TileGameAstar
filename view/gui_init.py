@@ -1,3 +1,6 @@
+import time
+
+from model.a_star import AStar
 from view.graphic_board import *
 from tkinter import *
 from model.board import Board
@@ -29,7 +32,7 @@ def init_gui(primary_board=None, secondary_board=None, size=75, width=3, height=
 
 def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 	start = time.time()
-	a_star = AStar(secondary_board, primary_board)
+	a_star = AStar(primary_board, secondary_board)
 	solution = a_star.find_solution()
 
 	if solution is not None:
@@ -40,7 +43,7 @@ def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 
 
 def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
-	a_star = AStar(secondary_board, primary_board)
+	a_star = AStar(primary_board, secondary_board)
 	solution = a_star.find_solution()
 
 	if solution is not None:
@@ -104,9 +107,10 @@ def draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height,
 	primary_canvas.delete("all")
 	secondary_canvas.delete("all")
 	control_canvas.delete("all")
-
-	primary_board = Board(width, height)
-	secondary_board = Board(width, height)
+	if primary_board is None:
+		primary_board = Board(width, height)
+	if secondary_board is None:
+		secondary_board = Board(width, height)
 
 	primary_graphic_board = GraphicBoard(primary_board, secondary_board, primary_canvas)
 	secondary_graphic_board = GraphicBoard(secondary_board, primary_board, secondary_canvas)

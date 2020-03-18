@@ -10,13 +10,13 @@ class AStar:
 		self.all_generated_states = set()
 		free_x = -1
 		free_y = -1
-		for y in range(starting_board.height):
-			for x in range(starting_board.width):
-				if starting_board.matrix[x][y] == 0:
+		for y in range(goal_board.height):
+			for x in range(goal_board.width):
+				if goal_board.matrix[x][y] == 0:
 					free_x = x
 					free_y = y
 					break
-		starting_state = State(starting_board, goal_board, 0, free_x, free_y, None)
+		starting_state = State(goal_board, starting_board, 0, free_x, free_y, None)
 		self.all_generated_states.add(str(starting_state.current_board.matrix))
 		heappush(self.available_states, (starting_state.value, 0, starting_state))
 
@@ -78,7 +78,7 @@ class State:
 		self.current_board = current_board
 		self.goal_board = goal_board
 		self.num_steps = num_steps
-		self.value = self.calculate_match_value() + num_steps
+		self.value = self.calculate_distance_value() + num_steps
 
 	def get_current_board_copy(self):
 		return copy.deepcopy(self.current_board)

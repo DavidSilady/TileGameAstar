@@ -14,18 +14,21 @@ def generate_tiles(width, height):
 	shuffled_values = list(range(0, width*height))
 	random.shuffle(shuffled_values)
 	index = 0
-	for x in range(width):
-		for y in range(height):
+	for y in range(height):
+		for x in range(width):
 			tiles[x][y] = shuffled_values[index]
 			index += 1
 	return tiles
 
 
 class Board:
-	def __init__(self, width, height):
+	def __init__(self, width, height, matrix=None):
 		self.width = width
 		self.height = height
-		self.matrix: List[List[int]] = generate_tiles(width, height)
+		if matrix is None:
+			self.matrix: List[List[int]] = generate_tiles(width, height)
+		else:
+			self.matrix = matrix
 
 	def get_empty(self):
 		for y in range(self.height):
@@ -34,6 +37,7 @@ class Board:
 					return x, y
 
 	def print_tiles(self):
+		print(self.matrix)
 		for y in range(self.height):
 			output = ""
 			for x in range(self.width):
