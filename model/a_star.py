@@ -3,6 +3,13 @@ import copy
 from model.board import *
 from heapq import *
 
+DICTIONARY = {
+	"(0, 1)": "Up",
+	"(0, -1)": "Down",
+	"(1, 0)": "Right",
+	"(-1, 0)": "Left"
+}
+
 
 class AStar:
 	def __init__(self, starting_board: Board, goal_board: Board):
@@ -38,7 +45,7 @@ class AStar:
 				final_state.current_board.print_tiles()
 				print("Found!!")
 				return final_state
-			if len(self.all_generated_states) > 255000:
+			if len(self.all_generated_states) > 30000:
 				print("Prematurely ending. . .")
 				return None
 
@@ -65,7 +72,7 @@ class AStar:
 				index = 0
 				# solution.reverse()
 				for move in solution:
-					print(index, move)
+					print(index, DICTIONARY[str(move)])
 					index += 1
 				return solution
 
