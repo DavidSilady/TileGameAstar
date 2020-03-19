@@ -10,13 +10,13 @@ def swap(a, b):
 
 
 def generate_tiles(width, height):
-	tiles: List[List[int]] = [[0 for i in range(height)] for j in range(width)]
+	tiles: List[List[int]] = [[0 for x in range(width)] for y in range(height)]
 	shuffled_values = list(range(0, width*height))
 	random.shuffle(shuffled_values)
 	index = 0
 	for y in range(height):
 		for x in range(width):
-			tiles[x][y] = shuffled_values[index]
+			tiles[y][x] = shuffled_values[index]
 			index += 1
 	return tiles
 
@@ -33,7 +33,7 @@ class Board:
 	def get_empty(self):
 		for y in range(self.height):
 			for x in range(self.width):
-				if self.matrix[x][y] == 0:
+				if self.matrix[y][x] == 0:
 					return x, y
 
 	def print_tiles(self):
@@ -41,37 +41,43 @@ class Board:
 		for y in range(self.height):
 			output = ""
 			for x in range(self.width):
-				output += " " + str(self.matrix[x][y])
+				output += " " + str(self.matrix[y][x])
 			print(output)
 
 	def swap_values(self, x1, y1, x2, y2):
-		tmp = self.matrix[x1][y1]
-		self.matrix[x1][y1] = self.matrix[x2][y2]
-		self.matrix[x2][y2] = tmp
+		tmp = self.matrix[y1][x1]
+		self.matrix[y1][x1] = self.matrix[y2][x2]
+		self.matrix[y2][x2] = tmp
 
 	def interact(self, x, y):
-		print("Interact: ", x, y)
-		if self.matrix[x][y] == 0:
+		self.print_tiles()
+		print("Interact: ", y, x)
+		if self.matrix[y][x] == 0:
 			return 0, 0
-		if y - 1 >= 0 and self.matrix[x][y - 1] == 0:
-			self.swap_values(x, y, x, y - 1)
-			x_offset = 0
-			y_offset = -1
-			return x_offset, y_offset
-		if y + 1 < self.height and self.matrix[x][y + 1] == 0:
-			self.swap_values(x, y, x, y + 1)
-			x_offset = 0
-			y_offset = 1
-			return x_offset, y_offset
-		if x - 1 >= 0 and self.matrix[x - 1][y] == 0:
+		if x - 1 >= 0 and self.matrix[y][x - 1] == 0:
 			self.swap_values(x, y, x - 1, y)
-			x_offset = -1
+			x_offset = - 1
 			y_offset = 0
+			self.print_tiles()
 			return x_offset, y_offset
-		if x + 1 < self.width and self.matrix[x + 1][y] == 0:
+		if x + 1 < self.width and self.matrix[y][x + 1] == 0:
 			self.swap_values(x, y, x + 1, y)
 			x_offset = 1
 			y_offset = 0
+			self.print_tiles()
 			return x_offset, y_offset
+		if y - 1 >= 0 and self.matrix[y - 1][x] == 0:
+			self.swap_values(x, y, x, y - 1)
+			x_offset = 0
+			y_offset = -1
+			self.print_tiles()
+			return x_offset, y_offset
+		if y + 1 < self.height and self.matrix[y + 1][x] == 0:
+			self.swap_values(x, y, x, y + 1)
+			x_offset = 0
+			y_offset = 1
+			self.print_tiles()
+			return x_offset, y_offset
+		self.print_tiles()
 		return 0, 0
 

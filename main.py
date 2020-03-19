@@ -19,8 +19,9 @@ def init_test(file_name):
 	height = dimensions[1]
 	primary_matrix = read_file_matrix(file, width, height)
 	secondary_matrix = read_file_matrix(file, width, height)
-	primary_board = Board(height, width, primary_matrix)
-	secondary_board = Board(height, width, secondary_matrix)
+	primary_board = Board(width, height, primary_matrix)
+	secondary_board = Board(width, height, secondary_matrix)
+	# secondary_board.print_tiles()
 	init_gui(primary_board, secondary_board, width=width, height=height)
 
 

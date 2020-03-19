@@ -12,7 +12,7 @@ class AStar:
 		free_y = -1
 		for y in range(goal_board.height):
 			for x in range(goal_board.width):
-				if goal_board.matrix[x][y] == 0:
+				if goal_board.matrix[y][x] == 0:
 					free_x = x
 					free_y = y
 					break
@@ -38,7 +38,7 @@ class AStar:
 				final_state.current_board.print_tiles()
 				print("Found!!")
 				return final_state
-			if len(self.all_generated_states) > 255000:
+			if len(self.all_generated_states) > 25000:
 				print("Prematurely ending. . .")
 				return None
 
@@ -86,14 +86,14 @@ class State:
 	def find_pair_distance(self, wanted_value, value_x, value_y):
 		for y in range(self.goal_board.height):
 			for x in range(self.goal_board.width):
-				if self.goal_board.matrix[x][y] == wanted_value:
+				if self.goal_board.matrix[y][x] == wanted_value:
 					return abs(value_x - x) + abs(value_y - y)
 
 	def calculate_match_value(self):
 		board_value = 0
 		for y in range(self.current_board.height):
 			for x in range(self.current_board.width):
-				if self.current_board.matrix[x][y] != self.goal_board.matrix[x][y]:
+				if self.current_board.matrix[y][x] != self.goal_board.matrix[y][x]:
 					board_value += 1
 		return board_value
 
@@ -101,7 +101,7 @@ class State:
 		board_value = 0
 		for y in range(self.current_board.height):
 			for x in range(self.current_board.width):
-				board_value += self.find_pair_distance(self.current_board.matrix[x][y], x, y)
+				board_value += self.find_pair_distance(self.current_board.matrix[y][x], x, y)
 		return board_value
 
 	def generate_state(self, available_states, all_generated_states, x_offset=0, y_offset=0):
