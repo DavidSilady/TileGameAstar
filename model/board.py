@@ -50,7 +50,6 @@ class Board:
 		self.matrix[y2][x2] = tmp
 
 	def interact(self, x, y):
-		self.print_tiles()
 		print("Interact: ", y, x)
 		if self.matrix[y][x] == 0:
 			return 0, 0
@@ -58,26 +57,21 @@ class Board:
 			self.swap_values(x, y, x - 1, y)
 			x_offset = - 1
 			y_offset = 0
-			self.print_tiles()
 			return x_offset, y_offset
 		if x + 1 < self.width and self.matrix[y][x + 1] == 0:
 			self.swap_values(x, y, x + 1, y)
 			x_offset = 1
 			y_offset = 0
-			self.print_tiles()
 			return x_offset, y_offset
 		if y - 1 >= 0 and self.matrix[y - 1][x] == 0:
 			self.swap_values(x, y, x, y - 1)
 			x_offset = 0
 			y_offset = -1
-			self.print_tiles()
 			return x_offset, y_offset
 		if y + 1 < self.height and self.matrix[y + 1][x] == 0:
 			self.swap_values(x, y, x, y + 1)
 			x_offset = 0
 			y_offset = 1
-			self.print_tiles()
 			return x_offset, y_offset
-		self.print_tiles()
 		return 0, 0
 
