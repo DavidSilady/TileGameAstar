@@ -12,8 +12,9 @@ DICTIONARY = {
 
 
 class AStar:
-	def __init__(self, starting_board: Board, goal_board: Board):
+	def __init__(self, starting_board: Board, goal_board: Board, state_limit):
 		self.available_states = []  # max heap
+		self.state_limit = state_limit
 		self.all_generated_states = set()
 		free_x = -1
 		free_y = -1
@@ -45,7 +46,7 @@ class AStar:
 				final_state.current_board.print_tiles()
 				print("Found!!")
 				return final_state, True
-			if len(self.all_generated_states) > 20000:
+			if len(self.all_generated_states) > self.state_limit:
 				print("Prematurely ending. . .")
 				return heappop(self.available_states)[2], False
 

@@ -62,7 +62,7 @@ class Tile:  # inner Tile class
 		                                                                          canvas,
 		                                                                          graphic_board))
 
-	def move_tile(self, direction_x, direction_y, canvas, speed=100, rect_bg="black"):
+	def move_tile(self, direction_x, direction_y, canvas, speed=150, rect_bg="black"):
 		speed = 0.05 / speed
 		if self.value == 0:
 			return
@@ -103,7 +103,7 @@ class GraphicBoard:
 	def move_empty(self, coordinates):
 		x, y = self.primary_board.get_empty()
 		directions = self.primary_board.interact(x + coordinates[0], y + coordinates[1])
-		self.tiles[y + coordinates[1]][x + coordinates[0]].move_tile(directions[0], directions[1], self.canvas, speed=100)
+		self.tiles[y + coordinates[1]][x + coordinates[0]].move_tile(directions[0], directions[1], self.canvas, speed=200)
 		self.swap_tiles(x, y, x + coordinates[0], y + coordinates[1])
 		self.tiles[y][x].check_color(self.primary_board, self.secondary_board, self.canvas)
 		self.tiles[y][x].notify_observer(self.primary_board, self.secondary_board, x + coordinates[0], y + coordinates[1])
