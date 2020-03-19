@@ -37,7 +37,6 @@ class Board:
 					return x, y
 
 	def print_tiles(self):
-		print(self.matrix)
 		for y in range(self.height):
 			output = ""
 			for x in range(self.width):
@@ -50,7 +49,7 @@ class Board:
 		self.matrix[y2][x2] = tmp
 
 	def interact(self, x, y):
-		print("Interact: ", y, x)
+		print("Interact: ", x, y)
 		if self.matrix[y][x] == 0:
 			return 0, 0
 		if x - 1 >= 0 and self.matrix[y][x - 1] == 0:

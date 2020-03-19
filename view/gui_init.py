@@ -30,23 +30,28 @@ def init_gui(primary_board=None, secondary_board=None, size=75, width=3, height=
 	root.mainloop()
 
 
-def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
+def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard, secondary_graphic_board: GraphicBoard):
 	start = time.time()
 	a_star = AStar(primary_board, secondary_board)
-	solution = a_star.find_solution()
+	solution, is_solved = a_star.find_solution()
 
-	if solution is not None:
+	if solution is not None and is_solved:
 		for coordinates in solution:
 			primary_graphic_board.move_empty(coordinates)
+	elif solution is not None and not is_solved:
+		solution.reverse()
+		for coordinates in solution:
+			coordinates = (-coordinates[0], -coordinates[1])
+			secondary_graphic_board.move_empty(coordinates)
 	end = time.time()
 	print("Time elapsed: ", end - start)
 
 
 def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard):
 	a_star = AStar(primary_board, secondary_board)
-	solution = a_star.find_solution()
+	solution, is_solved = a_star.find_solution()
 
-	if solution is not None:
+	if solution is not None and is_solved:
 		primary_graphic_board.move_empty(solution[0])
 
 
@@ -59,7 +64,7 @@ def new_button(canvas: Canvas, size, x, y, text):
 
 
 def draw_buttons(canvas: Canvas, primary_canvas, secondary_canvas,
-                 primary_board, secondary_board, graphic_board, size=130, x=0, y=0):
+                 primary_board, secondary_board, graphic_board, sec_graphic_board, size=130, x=0, y=0):
 	def on_enter(e, button):
 		canvas.itemconfig(button, fill="red")
 
@@ -67,8 +72,10 @@ def draw_buttons(canvas: Canvas, primary_canvas, secondary_canvas,
 		canvas.itemconfig(button, fill="black")
 
 	solve_rectangle, solve_text = new_button(canvas, size, x, y, "Solve")
-	canvas.tag_bind(solve_rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
-	canvas.tag_bind(solve_text, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board))
+	canvas.tag_bind(solve_rectangle, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board,
+	                                                                   sec_graphic_board))
+	canvas.tag_bind(solve_text, "<Button-1>", lambda event: solve(primary_board, secondary_board, graphic_board,
+	                                                              sec_graphic_board))
 	canvas.tag_bind(solve_rectangle, "<Enter>", lambda event: on_enter(event, solve_rectangle))
 	canvas.tag_bind(solve_text, "<Enter>", lambda event: on_enter(event, solve_rectangle))
 	canvas.tag_bind(solve_rectangle, "<Leave>", lambda event: on_leave(event, solve_rectangle))
@@ -124,7 +131,8 @@ def draw_boards(primary_canvas, secondary_canvas, control_canvas, width, height,
 	                                   margin=margin,
 	                                   goal_board=primary_board)
 
-	draw_buttons(control_canvas, primary_canvas, secondary_canvas, primary_board, secondary_board, primary_graphic_board)
+	draw_buttons(control_canvas, primary_canvas, secondary_canvas, primary_board, secondary_board,
+	             primary_graphic_board, secondary_graphic_board)
 
 
 

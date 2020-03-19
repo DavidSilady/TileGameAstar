@@ -4,8 +4,8 @@ from model.board import *
 from heapq import *
 
 DICTIONARY = {
-	"(0, 1)": "Up",
-	"(0, -1)": "Down",
+	"(0, 1)": "Down",
+	"(0, -1)": "Up",
 	"(1, 0)": "Right",
 	"(-1, 0)": "Left"
 }
@@ -37,21 +37,21 @@ class AStar:
 	def find_final_state(self):
 		while True:
 			if len(self.available_states) == 0:
-				return None
+				return None, False
 			if len(self.all_generated_states) % 1000 == 0:
 				print(len(self.all_generated_states))
 			final_state: State = self.expand()
 			if final_state is not None:
 				final_state.current_board.print_tiles()
 				print("Found!!")
-				return final_state
-			if len(self.all_generated_states) > 30000:
+				return final_state, True
+			if len(self.all_generated_states) > 20000:
 				print("Prematurely ending. . .")
-				return None
+				return heappop(self.available_states)[2], False
 
 	def find_solution(self):
 
-		current_state: State = self.find_final_state()
+		current_state, is_solved = self.find_final_state()
 		if current_state is None:
 			print("Not solvable.")
 			return None
@@ -60,21 +60,19 @@ class AStar:
 			return None
 
 		solution = []
-
+		index = 1
 		while True:
 			move_coordinates = (current_state.prev_state.free_x - current_state.free_x,
 			                    current_state.prev_state.free_y - current_state.free_y)
 			solution.append(move_coordinates)
-
+			# current_state.current_board.print_tiles()
+			# print(". . . ", DICTIONARY[str(move_coordinates)])
+			print(index, DICTIONARY[str(move_coordinates)])
+			index += 1
 			current_state = current_state.prev_state
 
 			if current_state.prev_state is None:
-				index = 0
-				# solution.reverse()
-				for move in solution:
-					print(index, DICTIONARY[str(move)])
-					index += 1
-				return solution
+				return solution, is_solved
 
 
 class State:
