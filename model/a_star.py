@@ -55,10 +55,10 @@ class AStar:
 		current_state, is_solved = self.find_final_state()
 		if current_state is None:
 			print("Not solvable.")
-			return None
+			return None, False
 		if current_state.prev_state is None:
 			print("Wow, does not need solving.")
-			return None
+			return None, False
 
 		solution = []
 		index = 1
