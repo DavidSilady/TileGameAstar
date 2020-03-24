@@ -38,13 +38,13 @@ class AStar:
 	def find_final_state(self):
 		while True:
 			if len(self.available_states) == 0:
+				print("No possible solution.")
 				return None, False
-			if len(self.all_generated_states) % 1000 == 0:
-				print(len(self.all_generated_states))
+			# if len(self.all_generated_states) % 1000 == 0:
+				# print(len(self.all_generated_states))
 			final_state: State = self.expand()
 			if final_state is not None:
-				final_state.current_board.print_tiles()
-				print("Found!!")
+				print("Solution found!")
 				return final_state, True
 			if len(self.all_generated_states) > self.state_limit:
 				print("Prematurely ending. . .")
@@ -84,7 +84,7 @@ class State:
 		self.current_board = current_board
 		self.goal_board = goal_board
 		self.num_steps = num_steps
-		self.value = self.calculate_distance_value() + num_steps
+		self.value = self.calculate_distance_value() + num_steps + self.calculate_match_value()
 
 	def get_current_board_copy(self):
 		return copy.deepcopy(self.current_board)
