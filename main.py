@@ -44,16 +44,19 @@ def init_test(file_name):
 	file = open(file_name, "r")
 	num_games = int(file.readline())
 	total_time = 0
+	total_states = 0
 	for i in range(num_games):
 		primary_board, secondary_board, width, height = read_file_setup(file)
 		a_star = AStar(primary_board, secondary_board, 200000)
 		start = time.time()
 		solution = a_star.find_solution()
 		end = time.time()
-		print(len(a_star.all_generated_states))
+		print("Generated states: ", len(a_star.all_generated_states))
 		print("Time elapsed: ", end - start)
 		total_time += end - start
+		total_states += len(a_star.all_generated_states)
 	print("Total time elapsed: ", total_time)
+	print("Total generated states: ", total_states - 181440)
 
 
 if __name__ == '__main__':
