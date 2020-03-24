@@ -9,24 +9,12 @@ def swap(a, b):
 	return a, b
 
 
-def generate_tiles(width, height):
-	tiles: List[List[int]] = [[0 for x in range(width)] for y in range(height)]
-	shuffled_values = list(range(0, width*height))
-	random.shuffle(shuffled_values)
-	index = 0
-	for y in range(height):
-		for x in range(width):
-			tiles[y][x] = shuffled_values[index]
-			index += 1
-	return tiles
-
-
 class Board:
 	def __init__(self, width, height, matrix=None):
 		self.width = width
 		self.height = height
 		if matrix is None:
-			self.matrix: List[List[int]] = generate_tiles(width, height)
+			self.matrix: List[List[int]] = self.generate_tiles()
 		else:
 			self.matrix = matrix
 
@@ -73,4 +61,17 @@ class Board:
 			y_offset = 1
 			return x_offset, y_offset
 		return 0, 0
+
+	def generate_tiles(self):
+		tiles: List[List[int]] = [[0 for x in range(self.width)] for y in range(self.height)]
+		shuffled_values = list(range(0, self.width * self.height))
+		random.shuffle(shuffled_values)
+		index = 0
+		for y in range(self.height):
+			for x in range(self.width):
+				tiles[y][x] = shuffled_values[index]
+				index += 1
+		return tiles
+
+
 
