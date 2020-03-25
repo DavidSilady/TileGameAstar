@@ -59,10 +59,9 @@ class AStar:
 		solution = []
 		index = 1
 		while True:
-			#
+			# One move equals the difference between coordinates of two consecutive states
 			move_coordinates = (current_state.prev_state.free_x - current_state.free_x,
 			                    current_state.prev_state.free_y - current_state.free_y)
-
 			solution.append(move_coordinates)
 			print(index, DICTIONARY[str(move_coordinates)])
 			index += 1
