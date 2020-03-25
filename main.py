@@ -10,14 +10,34 @@ from view.gui_init import *
 # 2 5 4
 # 3 0 1
 
+# Test File format:
+# 2
+# 3 3
+# 0 1 2
+# 3 4 5
+# 6 7 8
+#
+# 8 6 7
+# 2 5 4
+# 3 0 1
+# 3 3
+#
+# 0 1 2
+# 3 4 5
+# 6 7 8
+#
+# 8 6 7
+# 2 5 4
+# 3 0 1
+
 
 def init_file(file_name):
 	file = open(file_name, "r")
-	primary_board, secondary_board, width, height = read_file_setup(file)
+	primary_board, secondary_board, width, height = setup_from_file(file)
 	init_gui(primary_board, secondary_board, width=width, height=height)
 
 
-def read_file_setup(file):
+def setup_from_file(file):
 	dimensions = file.readline().split()
 	dimensions = [int(i) for i in dimensions]  # [0] width [1] height
 	width = dimensions[0]
@@ -46,15 +66,15 @@ def init_test(file_name):
 	total_time = 0
 	total_states = 0
 	for i in range(num_games):
-		primary_board, secondary_board, width, height = read_file_setup(file)
-		a_star = AStar(primary_board, secondary_board, 200000)
+		primary_board, secondary_board, width, height = setup_from_file(file)
+		a_star = AStar(primary_board, secondary_board, 300000)
 		start = time.time()
 		solution = a_star.find_solution()
 		end = time.time()
-		print("Generated states: ", len(a_star.all_generated_states))
+		print("Generated states: ", len(a_star.generated_states_set))
 		print("Time elapsed: ", end - start)
 		total_time += end - start
-		total_states += len(a_star.all_generated_states)
+		total_states += len(a_star.generated_states_set)
 	print("Total time elapsed: ", total_time)
 	print("Total generated states: ", total_states - 181440)
 
@@ -72,7 +92,7 @@ if __name__ == '__main__':
 		if len(command) == 1:
 			init_file(input())
 		init_file(command[1])
-	if command[0] == "test":
+	if command[0] == "test":  #
 		if len(command) == 1:
 			init_test(input())
 		init_test(command[1])

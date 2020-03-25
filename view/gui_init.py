@@ -43,7 +43,7 @@ def display_solution(solution, is_solved, primary_graphic_board, secondary_graph
 
 def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard, secondary_graphic_board: GraphicBoard):
 	start = time.time()
-	a_star = AStar(primary_board, secondary_board, 190000)
+	a_star = AStar(primary_board, secondary_board, 300000)
 	solution, is_solved = a_star.find_solution()
 	display_solution(solution, is_solved, primary_graphic_board, secondary_graphic_board)
 	end = time.time()
@@ -51,7 +51,7 @@ def solve(primary_board, secondary_board, primary_graphic_board: GraphicBoard, s
 
 
 def hint(primary_board, secondary_board, primary_graphic_board: GraphicBoard, secondary_graphic_board: GraphicBoard):
-	a_star = AStar(primary_board, secondary_board, 10000)
+	a_star = AStar(primary_board, secondary_board, 1000)
 	solution, is_solved = a_star.find_solution()
 	display_solution(solution, is_solved, primary_graphic_board, secondary_graphic_board)
 

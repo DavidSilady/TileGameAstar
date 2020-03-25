@@ -90,7 +90,7 @@ class GraphicBoard:
 			output = ""
 
 	def swap_tiles(self, x1, y1, x2, y2):
-		print("Swapping: ", y1, x1, " for ", y2, x2)
+		# print("Swapping: ", y1, x1, " for ", y2, x2)
 		tmp = self.tiles[y1][x1]
 		self.tiles[y1][x1] = self.tiles[y2][x2]
 		self.tiles[y2][x2] = tmp

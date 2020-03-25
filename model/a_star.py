@@ -13,67 +13,62 @@ DICTIONARY = {
 
 class AStar:
 	def __init__(self, starting_board: Board, goal_board: Board, state_limit):
-		self.available_states = []  # max heap
-		self.state_limit = state_limit
-		self.all_generated_states = set()
-		free_x = -1
-		free_y = -1
-		for y in range(goal_board.height):
-			for x in range(goal_board.width):
-				if goal_board.matrix[y][x] == 0:
-					free_x = x
-					free_y = y
-					break
+		self.available_states_heap = []  # max heap
+		self.state_limit = state_limit  # limit, where the algorithm will prematurely stop
+		self.generated_states_set = set()  # hash set of all generated matrices as strings
+		free_x, free_y = goal_board.get_empty()
+
 		starting_state = State(goal_board, starting_board, 0, free_x, free_y, None)
-		self.all_generated_states.add(str(starting_state.current_board.matrix))
-		heappush(self.available_states, (starting_state.value, 0, starting_state))
+		self.generated_states_set.add(str(starting_state.current_board.matrix))
+		heappush(self.available_states_heap, (starting_state.value, 0, starting_state))
+		# heap item form: Tuple(state.value, len(all generated states), state)
+		# length of all generated states required as a second backup comparison value in case two state values equal
 
 	def expand(self):
-		current_state = heappop(self.available_states)[2]
+		current_state = heappop(self.available_states_heap)[2]
 		if current_state.current_board.matrix == current_state.goal_board.matrix:
 			return current_state
-		current_state.generate_all_states(self.available_states, self.all_generated_states)
+		current_state.generate_all_states(self.available_states_heap, self.generated_states_set)
 		return None
 
-	def find_final_state(self):
+	def __find_final_state(self):
 		while True:
-			if len(self.available_states) == 0:
+			if len(self.available_states_heap) == 0:
 				print("No possible solution.")
 				return None, False
-			# if len(self.all_generated_states) % 1000 == 0:
-				# print(len(self.all_generated_states))
 			final_state: State = self.expand()
 			if final_state is not None:
 				print("Solution found!")
 				return final_state, True
-			if len(self.all_generated_states) > self.state_limit:
+			if len(self.generated_states_set) > self.state_limit:
 				print("Prematurely ending. . .")
-				return heappop(self.available_states)[2], False
+				return heappop(self.available_states_heap)[2], False
 
 	def find_solution(self):
-
-		current_state, is_solved = self.find_final_state()
+		current_state, is_solved = self.__find_final_state()
 		if current_state is None:
 			print("Not solvable.")
 			return None, False
 		if current_state.prev_state is None:
 			print("Wow, does not need solving.")
 			return None, False
+		return self.backtrack(current_state), is_solved
 
+	@staticmethod
+	def backtrack(current_state):
 		solution = []
 		index = 1
 		while True:
+			#
 			move_coordinates = (current_state.prev_state.free_x - current_state.free_x,
 			                    current_state.prev_state.free_y - current_state.free_y)
+
 			solution.append(move_coordinates)
-			# current_state.current_board.print_tiles()
-			# print(". . . ", DICTIONARY[str(move_coordinates)])
 			print(index, DICTIONARY[str(move_coordinates)])
 			index += 1
 			current_state = current_state.prev_state
-
 			if current_state.prev_state is None:
-				return solution, is_solved
+				return solution
 
 
 class State:
@@ -84,18 +79,25 @@ class State:
 		self.current_board = current_board
 		self.goal_board = goal_board
 		self.num_steps = num_steps
-		self.value = num_steps + self.calculate_distance_value() + self.calculate_match_value()
+		self.value = num_steps + self.calculate_weighted_distance_value()
 
 	def get_current_board_copy(self):
 		return copy.deepcopy(self.current_board)
 
-	def find_pair_distance(self, wanted_value, value_x, value_y):
+	def find_pair_distance(self, wanted_value, current_x, current_y):
+		"""
+		:param wanted_value: value we are searching for
+		:param current_x: x coordinate of the value in self current matrix
+		:param current_y: y coordinate of the value in self current matrix
+		:return: distance from current value position to goal value position
+		"""
 		for y in range(self.goal_board.height):
 			for x in range(self.goal_board.width):
 				if self.goal_board.matrix[y][x] == wanted_value:
-					return abs(value_x - x) + abs(value_y - y)
+					return abs(current_x - x) + abs(current_y - y)
 
 	def calculate_match_value(self):
+		# Heuristic num. 1
 		board_value = 0
 		for y in range(self.current_board.height):
 			for x in range(self.current_board.width):
@@ -104,27 +106,40 @@ class State:
 		return board_value
 
 	def calculate_distance_value(self):
+		# Heuristic num. 2
 		board_value = 0
 		for y in range(self.current_board.height):
 			for x in range(self.current_board.width):
 				board_value += self.find_pair_distance(self.current_board.matrix[y][x], x, y)
 		return board_value
 
-	def generate_state(self, available_states, all_generated_states, x_offset=0, y_offset=0):
-		transformed_board = self.get_current_board_copy()
+	def calculate_weighted_distance_value(self):
+		# Heuristic num. 3 (combination of 1. and 2.)
+		board_value = 0
+		for y in range(self.current_board.height):
+			for x in range(self.current_board.width):
+				board_value += self.find_pair_distance(self.current_board.matrix[y][x], x, y)
+				if self.current_board.matrix[y][x] != self.goal_board.matrix[y][x]:
+					board_value += 1
+		return board_value
+
+	def generate_state(self, available_states, generated_states_set, x_offset=0, y_offset=0):
+		transformed_board = self.get_current_board_copy()  # Important not to pass just a pointer
 		transformed_board.swap_values(self.free_x + x_offset, self.free_y + y_offset, self.free_x, self.free_y)
+		if str(transformed_board.matrix) in generated_states_set:  # Check if not already generated
+			return
 		new_state = State(transformed_board,
 		                  self.goal_board,
 		                  self.num_steps + 1,
 		                  self.free_x + x_offset,
 		                  self.free_y + y_offset,
 		                  self)
-		if str(transformed_board.matrix) in all_generated_states:
-			return
-		heappush(available_states, (new_state.value, len(all_generated_states), new_state))
-		all_generated_states.add(str(transformed_board.matrix))
+		# Add the state to both heap and hash set
+		heappush(available_states, (new_state.value, len(generated_states_set), new_state))
+		generated_states_set.add(str(transformed_board.matrix))
 
-	def generate_all_states(self, available_states, all_generated_states):  # nobody touch my spaghetti
+	def generate_all_states(self, available_states, all_generated_states):
+		# check needed, if not out of bounds
 		if self.free_y - 1 >= 0:  # checking above
 			self.generate_state(available_states, all_generated_states, y_offset=-1)
 
