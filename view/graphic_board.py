@@ -1,3 +1,4 @@
+import time
 from view.gui_init import *
 from model.board import *
 from tkinter import *
@@ -16,7 +17,7 @@ class Tile:  # inner Tile class
 
 	def mouse_clicked(self, event, primary_board: Board, secondary_board: Board, canvas, graphic_board):
 		direction_x, direction_y = primary_board.interact(self.x, self.y)
-		self.move_tile(direction_x, direction_y, canvas, speed=100)
+		self.move_tile(direction_x, direction_y, canvas, speed=10000)
 		graphic_board.swap_tiles(self.x, self.y, self.x + direction_x, self.y + direction_y)
 		self.check_color(primary_board, secondary_board, canvas)
 		self.notify_observer(primary_board, secondary_board, self.x - direction_x, self.y - direction_y)
@@ -62,15 +63,22 @@ class Tile:  # inner Tile class
 		                                                                          canvas,
 		                                                                          graphic_board))
 
-	def move_tile(self, direction_x, direction_y, canvas, speed=150, rect_bg="black"):
-		speed = 0.05 / speed
+	def move_tile(self, direction_x, direction_y, canvas, speed=1000, rect_bg="black"):
+		speed = 0.01 / speed
 		if self.value == 0:
 			return
 		for offset in range(0, self.size + self.margin):
-			time.sleep(speed)
+			accurate_delay(1)
 			canvas.move(self.background, direction_x, direction_y)
 			canvas.move(self.text, direction_x, direction_y)
 			canvas.update()
+
+def accurate_delay(delay):
+    ''' Function to provide accurate time delay in millisecond
+    '''
+    _ = time.perf_counter() + delay/1000
+    while time.perf_counter() < _:
+        pass
 
 
 class GraphicBoard:
@@ -103,7 +111,7 @@ class GraphicBoard:
 	def move_empty(self, coordinates):
 		x, y = self.primary_board.get_empty()
 		directions = self.primary_board.interact(x + coordinates[0], y + coordinates[1])
-		self.tiles[y + coordinates[1]][x + coordinates[0]].move_tile(directions[0], directions[1], self.canvas, speed=200)
+		self.tiles[y + coordinates[1]][x + coordinates[0]].move_tile(directions[0], directions[1], self.canvas, speed=1000)
 		self.swap_tiles(x, y, x + coordinates[0], y + coordinates[1])
 		self.tiles[y][x].check_color(self.primary_board, self.secondary_board, self.canvas)
 		self.tiles[y][x].notify_observer(self.primary_board, self.secondary_board, x + coordinates[0], y + coordinates[1])

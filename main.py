@@ -1,3 +1,4 @@
+import sys
 from view.gui_init import *
 
 # File format:
@@ -67,7 +68,7 @@ def init_test(file_name):
 	total_states = 0
 	for i in range(num_games):
 		primary_board, secondary_board, width, height = setup_from_file(file)
-		a_star = AStar(primary_board, secondary_board, 300000)
+		a_star = AStar(primary_board, secondary_board, 181440)
 		start = time.time()
 		solution = a_star.find_solution()
 		end = time.time()
@@ -87,7 +88,12 @@ if __name__ == '__main__':
 		command = sys.argv[1:]
 	print(command)
 	if command[0] == "gui":
-		init_gui(width=3, height=3)
+		width = 3
+		height = 3
+		if len(command) == 3:
+			width = int(command[1])
+			height = int(command[2])
+		init_gui(width=width, height=height)
 	if command[0] == "file":
 		if len(command) == 1:
 			init_file(input())
@@ -96,5 +102,8 @@ if __name__ == '__main__':
 		if len(command) == 1:
 			init_test(input())
 		init_test(command[1])
+	
+	# Default:
+	# init_gui(width=5, height=5)
 
 
